@@ -1,6 +1,6 @@
 import React from "react";
 import { Center, NativeBaseProvider, StatusBar } from "native-base";
-import Todo from "./views/todo";
+import Todo from "./screens/todo";
 import { useColorScheme } from "react-native";
 import { customTheme } from "./theme";
 import { RealmProvider } from "./contexts/db";

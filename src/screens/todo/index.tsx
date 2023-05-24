@@ -32,19 +32,32 @@ export default function Todo() {
 			is_completed: false,
 			created_at: new Date()
 		}));
-		console.log(data);
 
 		setList(old => ([...old, data]));
 	};
 
+	const getTodos = () => {
+		const todos = realm.objects<TodoType[]>("Todo").toJSON();
+		setList(todos as TodoType[]);
+	}
+
+	const getTodoById = (id: string) => {
+		return realm.objects("Todo").filtered("_id == $0", id);
+	}
+
 	const handleDelete = (index: number) => {
-		setList(old => {
-			const temp = old.filter((_, index) => index !== index);
-			return temp;
-		});
+		const obj = getTodoById(list[index]._id);
+		realm.write(() => realm.delete(obj));
+
+		setList(old => old.filter((_, idx) => idx !== index));
 	};
 
 	const handleStatusChange = (index: number) => {
+		const obj = getTodoById(list[index]._id);
+		realm.write(() => {
+			obj.update("is_completed", !list[index].is_completed);
+		})
+
 		setList(old => {
 			const newList = [...old];
 			newList[index].is_completed = !newList[index].is_completed;
@@ -53,9 +66,8 @@ export default function Todo() {
 	};
 
 	useEffect(() => {
-		const todos = realm.objects<TodoType[]>("Todo").toJSON();
-		setList(todos as TodoType[]);
-	},[])
+		getTodos();
+	}, [])
 
 	return (
 		<Center w="100%">
