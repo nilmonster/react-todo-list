@@ -1,4 +1,4 @@
-import { Box, Center, Checkbox, HStack, Heading, IconButton, Input, Text, VStack, useToast } from "native-base";
+import { Box, Center, Checkbox, Flex, HStack, Heading, IconButton, Input, ScrollView, Text, VStack, useToast } from "native-base";
 import { useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/Feather";
 import { useRealm } from "../../contexts/db";
@@ -70,64 +70,89 @@ export default function Todo() {
 	}, [])
 
 	return (
-		<Center w="100%">
-			<Box maxW="300" w="100%">
-				<Heading mb="2" size="md">
-					todo-list
+		<Flex w={"100%"} h={"100%"} alignItems="center">
+			<Center w={"100%"} h={"20%"}>
+				<Heading size="lg">
+					TodoList
 				</Heading>
-				<VStack space={4}>
-					<HStack space={2}>
-						<Input
-							flex={1}
-							onChangeText={v => setInputValue(v)}
-							value={inputValue}
-							placeholder="Add Task"
-							onSubmitEditing={() => {
-								addItem(inputValue);
-								clearInput();
-							}}
-						/>
-						<IconButton
-							borderRadius="sm"
-							variant="solid"
-							icon={<Icon name="plus" size={20} color="#ccc" />}
-							onPress={() => {
-								addItem(inputValue);
-								clearInput();
-							}} />
-					</HStack>
-					<VStack space={2}>
-						{list.map((item, index) => (
-							<HStack
-								w="100%"
-								justifyContent="space-between"
-								alignItems="center"
-								key={item._id}>
-								<Checkbox
-									aria-label="check"
-									isChecked={item.is_completed}
-									onChange={() => handleStatusChange(index)} value={item.title}
-								/>
-								<Text
-									width="100%"
-									flexShrink={1}
-									textAlign="left"
-									mx="2"
-									strikeThrough={item.is_completed}
-									onPress={() => handleStatusChange(index)}>
-									{item.title}
-								</Text>
-								<IconButton
-									size="sm"
-									colorScheme="trueGray"
-									icon={<Icon name="trash" size={20} color="#ccc" />}
-									onPress={() => handleDelete(index)}
-								/>
-							</HStack>
-						))}
+			</Center>
+			<Center
+				bg="primary.700"
+				_dark={{
+					bg: "primary.900"
+				}}
+				w={"100%"}
+				rounded="lg"
+			>
+				<Box h="100%" maxW="300" w="100%" mt={10}>
+					<VStack space={4}>
+						<HStack space={2}>
+							<Input
+								flex={1}
+								onChangeText={v => setInputValue(v)}
+								value={inputValue}
+								placeholder="Add Task"
+								onSubmitEditing={() => {
+									addItem(inputValue);
+									clearInput();
+								}}
+								_dark={{
+									borderColor: "white",
+									color: "white",
+									placeholderTextColor: "white"
+								}}
+							/>
+							<IconButton
+								borderRadius="sm"
+								variant="solid"
+								icon={<Icon name="plus" size={20} color="#ccc" />}
+								onPress={() => {
+									addItem(inputValue);
+									clearInput();
+								}} />
+						</HStack>
+						<ScrollView w={"300"} h={"300"}>
+							<VStack space={2}>
+								{list.map((item, index) => (
+									<HStack
+										w="100%"
+										justifyContent="space-between"
+										alignItems="center"
+										key={item._id}
+									>
+										<Checkbox
+											aria-label="check"
+											isChecked={item.is_completed}
+											onChange={() => handleStatusChange(index)}
+											value={item.title}
+											_dark={{
+												backgroundColor: "#f3f3f3"
+											}}
+										/>
+										<Text
+											width="100%"
+											flexShrink={1}
+											textAlign="left"
+											mx="2"
+											strikeThrough={item.is_completed}
+											onPress={() => handleStatusChange(index)}
+											color={"white"}
+										>
+											{item.title}
+										</Text>
+										<IconButton
+											size="sm"
+											colorScheme="trueGray"
+											icon={<Icon name="trash" size={20} color="#ccc" />}
+											onPress={() => handleDelete(index)}
+										/>
+									</HStack>
+								))}
+							</VStack>
+						</ScrollView>
 					</VStack>
-				</VStack>
-			</Box>
-		</Center>
+				</Box>
+			</Center>
+		</Flex>
 	);
 }
