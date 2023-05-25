@@ -1,28 +1,32 @@
-import { 
-	Box, 
-	Center, 
-	Flex, 
-	HStack, 
-	Heading, 
-	IconButton, 
-	Input, 
-	ScrollView, 
-	VStack, 
-	useToast 
+import {
+	Box,
+	Center,
+	Flex,
+	HStack,
+	Heading,
+	IconButton,
+	Input,
+	ScrollView,
+	VStack,
+	useToast
 } from "native-base";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/Feather";
 import { useRealm } from "../../contexts/db";
 import { TodoType } from "../../@types/todo";
 import uuid from "react-native-uuid";
 import TodoDetails from "./details";
+import { TodoActions } from "../../contexts/reducers/todo";
+import { Context } from "../../contexts";
 
 export default function Todo() {
-	const [list, setList] = useState<TodoType[]>([]);
+	// const [list, setList] = useState<TodoType[]>([]);
 	const [inputValue, setInputValue] = useState("");
 
 	const realm = useRealm();
 	const toast = useToast();
+	const { setTodos, addTodo } = TodoActions();
+	const { state: { todos: { todos } } } = useContext(Context);
 
 	const clearInput = () => setInputValue("");
 
@@ -45,17 +49,19 @@ export default function Todo() {
 			created_at: new Date()
 		}));
 
-		setList(old => ([...old, data]));
+		// setList(old => ([...old, data]));
+		addTodo(data);
 	};
 
 	const getTodos = () => {
 		const todos = realm.objects<TodoType[]>("Todo").toJSON();
-		setList(todos as TodoType[]);
+		// setList(todos as TodoType[]);
+		setTodos(todos as TodoType[])
 	}
 
-	const getTodoById = (id: string) => {
-		return realm.objects("Todo").filtered("_id == $0", id);
-	}
+	// const getTodoById = (id: string) => {
+	// 	return realm.objects("Todo").filtered("_id == $0", id);
+	// }
 
 	useEffect(() => {
 		getTodos();
@@ -105,7 +111,7 @@ export default function Todo() {
 						</HStack>
 						<ScrollView w={"300"} h={"300"}>
 							<VStack space={2}>
-								{list.map((item, index) => (
+								{todos.map((item, index) => (
 									<TodoDetails
 										key={item._id}
 										item={item}

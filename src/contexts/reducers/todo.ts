@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { TodoType } from "../../@types/todo";
-import { ActionType } from "..";
+import { ActionType, Context } from "..";
 
 export type TodoStateType = {
     todos: TodoType[];
@@ -12,35 +12,71 @@ export const TodoInitialState: TodoStateType = {
 
 export const TodoReducer = (state: TodoStateType, action: ActionType) => {
     switch (action.type) {
-        case 'SET_TODOS':
-            return { ...state, todos: action.payload.todos };
+        case "SET_TODOS":
+            return {
+                ...state,
+                todos: action.payload.todos
+            };
+        case "ADD_TODO":
+            return {
+                ...state,
+                todos: [...state.todos, action.payload.todo]
+            }
+        case "COMPLETE_TODO":
+            console.log(action.payload.index)
+            const updated = [...state.todos];
+            const completed = !updated[action.payload.index].is_completed;
+            updated[action.payload.index].is_completed = completed;
+            return {
+                ...state,
+                todos: updated
+            };
+        case "DELETE_TODO":
+            const deleted = state.todos.filter((_, index) => index !== action.payload.index);
+            return {
+                ...state,
+                todos: deleted
+            };
+        default:
+            return state;
     }
-    return state;
 }
 
-// export const TodoActions = () => {
-//     const { state, dispatch } = useContext(Context);
-//     const navigate = useNavigate();
+export const TodoActions = () => {
+    const { dispatch } = useContext(Context);
 
-//     return {
-//         switchRole: (role: string) => {
-//             dispatch({
-//                 type: 'CHANGE_ROLE',
-//                 payload: {
-//                     role: role
-//                 }
-//             });
-//         },
-//         logout: () => {
-//             navigate('/signin');
-//             localStorage.setItem('token', '');
-//             dispatch({
-//                 type: 'CHANGE_ROLE',
-//                 payload: {
-//                     role: ''
-//                 }
-//             });
-//             return null;
-//         }
-//     }
-// }
+    return {
+        setTodos: (data: TodoType[]) => {
+            dispatch({
+                type: "SET_TODOS",
+                payload: {
+                    todos: data
+                }
+            });
+        },
+        addTodo: (data: TodoType) => {
+            dispatch({
+                type: "ADD_TODO",
+                payload: {
+                    todo: data
+                }
+            });
+        },
+        changeTodo: (idx: number) => {
+            dispatch({
+                type: "COMPLETE_TODO",
+                payload: {
+                    index: idx
+                }
+            })
+        },
+        deleteTodo: (idx: number) => {
+            dispatch({
+                type: "DELETE_TODO",
+                payload: {
+                    index: idx
+                }
+            })
+        }
+    }
+}

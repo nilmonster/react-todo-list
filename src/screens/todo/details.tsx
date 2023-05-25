@@ -3,6 +3,9 @@ import { TodoType } from "../../@types/todo";
 import Icon from "react-native-vector-icons/Feather";
 import { useObject, useRealm } from "../../contexts/db";
 import { Todo as TodoSchema } from "../../schemas/todo";
+import { TodoActions } from "../../contexts/reducers/todo";
+import { useContext } from "react";
+import { Context } from "../../contexts";
 
 type Props = {
     item: TodoType;
@@ -12,27 +15,25 @@ type Props = {
 export default function TodoDetails({ item, index }: Props) {
     const realm = useRealm();
     const obj = useObject(TodoSchema, item._id);
-
-    const handleDelete = (index: number) => {
-		realm.write(() => realm.delete(obj));
-
-		setList(old => old.filter((_, idx) => idx !== index));
-	};
-
-	const handleStatusChange = (index: number) => {
-		realm.write(() => {
-			if (obj) {
-				obj.is_completed = !list[index].is_completed;
-			}
-		})
-
-		setList(old => {
-			const newList = [...old];
-			newList[index].is_completed = !newList[index].is_completed;
-			return newList;
-		});
-	};
+    const { deleteTodo, changeTodo } = TodoActions();
+    const { state: { todos: { todos } } } = useContext(Context);
     
+    const handleDelete = (index: number) => {
+        // console.log("delete :" + index)
+        realm.write(() => realm.delete(obj));
+        deleteTodo(index);
+    };
+
+    const handleStatusChange = (index: number) => {
+        // console.log("change :" + index)
+        realm.write(() => {
+            if (obj) {
+                obj.is_completed = !todos[index].is_completed;
+            }
+        })
+        changeTodo(index);
+    };
+
     return (
         <HStack
             w="100%"
