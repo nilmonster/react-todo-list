@@ -7,4 +7,4 @@ const realmConfig: Realm.Configuration = {
     schemaVersion: 2,
 };
 
-export const { RealmProvider, useRealm } = createRealmContext(realmConfig);
+export const { RealmProvider, useRealm, useObject } = createRealmContext(realmConfig);

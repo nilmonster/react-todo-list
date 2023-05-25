@@ -1,9 +1,21 @@
-import { Box, Center, Checkbox, Flex, HStack, Heading, IconButton, Input, ScrollView, Text, VStack, useToast } from "native-base";
+import { 
+	Box, 
+	Center, 
+	Flex, 
+	HStack, 
+	Heading, 
+	IconButton, 
+	Input, 
+	ScrollView, 
+	VStack, 
+	useToast 
+} from "native-base";
 import { useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/Feather";
 import { useRealm } from "../../contexts/db";
 import { TodoType } from "../../@types/todo";
 import uuid from "react-native-uuid";
+import TodoDetails from "./details";
 
 export default function Todo() {
 	const [list, setList] = useState<TodoType[]>([]);
@@ -44,26 +56,6 @@ export default function Todo() {
 	const getTodoById = (id: string) => {
 		return realm.objects("Todo").filtered("_id == $0", id);
 	}
-
-	const handleDelete = (index: number) => {
-		const obj = getTodoById(list[index]._id);
-		realm.write(() => realm.delete(obj));
-
-		setList(old => old.filter((_, idx) => idx !== index));
-	};
-
-	const handleStatusChange = (index: number) => {
-		const obj = getTodoById(list[index]._id);
-		realm.write(() => {
-			obj.update("is_completed", !list[index].is_completed);
-		})
-
-		setList(old => {
-			const newList = [...old];
-			newList[index].is_completed = !newList[index].is_completed;
-			return newList;
-		});
-	};
 
 	useEffect(() => {
 		getTodos();
@@ -114,39 +106,11 @@ export default function Todo() {
 						<ScrollView w={"300"} h={"300"}>
 							<VStack space={2}>
 								{list.map((item, index) => (
-									<HStack
-										w="100%"
-										justifyContent="space-between"
-										alignItems="center"
+									<TodoDetails
 										key={item._id}
-									>
-										<Checkbox
-											aria-label="check"
-											isChecked={item.is_completed}
-											onChange={() => handleStatusChange(index)}
-											value={item.title}
-											_dark={{
-												backgroundColor: "#f3f3f3"
-											}}
-										/>
-										<Text
-											width="100%"
-											flexShrink={1}
-											textAlign="left"
-											mx="2"
-											strikeThrough={item.is_completed}
-											onPress={() => handleStatusChange(index)}
-											color={"white"}
-										>
-											{item.title}
-										</Text>
-										<IconButton
-											size="sm"
-											colorScheme="trueGray"
-											icon={<Icon name="trash" size={20} color="#ccc" />}
-											onPress={() => handleDelete(index)}
-										/>
-									</HStack>
+										item={item}
+										index={index}
+									/>
 								))}
 							</VStack>
 						</ScrollView>
