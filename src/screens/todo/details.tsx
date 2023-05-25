@@ -12,18 +12,15 @@ import {
 } from "native-base";
 import { TodoType } from "../../@types/todo";
 import Icon from "react-native-vector-icons/Feather";
-import { TodoActions } from "../../contexts/reducers/todo";
-import { useContext, useEffect, useState } from "react";
-import { Context } from "../../contexts";
+import { useEffect, useState } from "react";
 import { getRealm } from "../../db/realm";
 import uuid from "react-native-uuid";
 
 export default function TodoDetails() {
     const [inputValue, setInputValue] = useState("");
+    const [tasks, setTasks] = useState<TodoType[]>([]);
 
     const toast = useToast();
-    const { setTasks, addTask, deleteTask, completeTask } = TodoActions();
-    const { state: { todo: { tasks } } } = useContext(Context);
     const color = useColorModeValue("#333", "#ccc");
 
     const clearInput = () => setInputValue("");
@@ -50,7 +47,7 @@ export default function TodoDetails() {
                 created_at: new Date()
             }
             realm.write<TodoType>(() => realm.create("Todo", data));
-            addTask(data);
+            setTasks(old => ([...old, data]));
         } catch (err) {
             console.log(err);
         } finally {
@@ -64,7 +61,7 @@ export default function TodoDetails() {
         try {
             const obj = realm.objectForPrimaryKey("Todo", tasks[index]._id);
             realm.write(() => realm.delete(obj));
-            deleteTask(index);
+            setTasks(old => (old.filter((_, idx) => idx !== index)));
         } catch (err) {
             console.log(err);
         } finally {
@@ -82,7 +79,12 @@ export default function TodoDetails() {
                     obj.is_completed = !tasks[index].is_completed;
                 }
             })
-            completeTask(index);
+            setTasks(old => {
+                const updated = [...old];
+                updated[index].is_completed = !updated[index].is_completed;
+                return updated
+            })
+
         } catch (err) {
             console.log(err);
         } finally {

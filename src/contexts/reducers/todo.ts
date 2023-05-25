@@ -24,8 +24,7 @@ export const TodoReducer = (state: TodoStateType, action: ActionType) => {
             }
         case "COMPLETE_TASK":
             const updated = [...state.tasks];
-            const completed = !updated[action.payload.index].is_completed;
-            updated[action.payload.index].is_completed = completed;
+            updated[action.payload.index].is_completed = !updated[action.payload.index].is_completed;
             return {
                 ...state,
                 tasks: updated
