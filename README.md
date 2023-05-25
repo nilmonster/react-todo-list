@@ -1,1 +1,1 @@
-![Alt text](/relative/path/to/screen_moon.png?raw=true "Optional Title")
+![Alt text](/assets/images/screen_moon.png?raw=true "Optional Title")
