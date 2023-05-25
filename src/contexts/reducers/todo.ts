@@ -23,7 +23,6 @@ export const TodoReducer = (state: TodoStateType, action: ActionType) => {
                 todos: [...state.todos, action.payload.todo]
             }
         case "COMPLETE_TODO":
-            console.log(action.payload.index)
             const updated = [...state.todos];
             const completed = !updated[action.payload.index].is_completed;
             updated[action.payload.index].is_completed = completed;
