@@ -7,13 +7,9 @@ import {
 	Icon,
 } from "native-base";
 import TodoDetails from "./details";
-import { useEffect, useState } from "react";
 import IconFeather from "react-native-vector-icons/Feather";
 
 export default function Todo() {
-	const [greeting, setGreeting] = useState("");
-	const [icon, setIcon] = useState("");
-
 	const getGreeting = () => {
 		var d = new Date();
 		var time = d.getHours();
@@ -27,37 +23,34 @@ export default function Todo() {
 		return ["Good evening", "moon"];
 	}
 
-	useEffect(() => {
-		const [greetingText, greetingIcon] = getGreeting();
-		setGreeting(greetingText);
-		setIcon(greetingIcon);
-	}, [])
+	const [greetingText, greetingIcon] = getGreeting();
+	const color = greetingIcon === "sun" ? "amber.400" : "coolGray.800";
 
 	return (
 		<Flex w={"100%"} h={"100%"} alignItems="center">
 			<Center w={"100%"} h={"20%"}>
 				<HStack space={3}>
 					<Icon
-						as={<IconFeather name={icon} />}
+						as={IconFeather}
 						size={35}
-						name="greetingIcon"
-						color="coolGray.800"
+						name={greetingIcon}
+						color={color}
 						_dark={{
 							color: "warmGray.50"
 						}}
 					/>
-					<Heading size="lg">
-						{greeting}
+					<Heading size="lg" color={color} _dark={{ color: "warmGray.50" }}>
+						{greetingText}
 					</Heading>
 				</HStack>
 			</Center>
 			<Center
-				bg="primary.700"
-				_dark={{
-					bg: "primary.900"
-				}}
+				bg="coolGray.300"
 				w={"100%"}
 				rounded="lg"
+				_dark={{
+					backgroundColor: "coolGray.700"
+				}}
 			>
 				<Box h="100%" maxW="300" w="100%" mt={10}>
 					<TodoDetails />

@@ -3,38 +3,38 @@ import { TodoType } from "../../@types/todo";
 import { ActionType, Context } from "..";
 
 export type TodoStateType = {
-    todos: TodoType[];
+    tasks: TodoType[];
 }
 
 export const TodoInitialState: TodoStateType = {
-    todos: []
+    tasks: []
 }
 
 export const TodoReducer = (state: TodoStateType, action: ActionType) => {
     switch (action.type) {
-        case "SET_TODOS":
+        case "SET_TASKS":
             return {
                 ...state,
-                todos: action.payload.todos
+                tasks: action.payload.tasks
             };
-        case "ADD_TODO":
+        case "ADD_TASK":
             return {
                 ...state,
-                todos: [...state.todos, action.payload.todo]
+                tasks: [...state.tasks, action.payload.task]
             }
-        case "COMPLETE_TODO":
-            const updated = [...state.todos];
+        case "COMPLETE_TASK":
+            const updated = [...state.tasks];
             const completed = !updated[action.payload.index].is_completed;
             updated[action.payload.index].is_completed = completed;
             return {
                 ...state,
-                todos: updated
+                tasks: updated
             };
-        case "DELETE_TODO":
-            const deleted = state.todos.filter((_, index) => index !== action.payload.index);
+        case "DELETE_TASK":
+            const deleted = state.tasks.filter((_, index) => index !== action.payload.index);
             return {
                 ...state,
-                todos: deleted
+                tasks: deleted
             };
         default:
             return state;
@@ -45,33 +45,33 @@ export const TodoActions = () => {
     const { dispatch } = useContext(Context);
 
     return {
-        setTodos: (data: TodoType[]) => {
+        setTasks: (data: TodoType[]) => {
             dispatch({
-                type: "SET_TODOS",
+                type: "SET_TASKS",
                 payload: {
-                    todos: data
+                    tasks: data
                 }
             });
         },
-        addTodo: (data: TodoType) => {
+        addTask: (data: TodoType) => {
             dispatch({
-                type: "ADD_TODO",
+                type: "ADD_TASK",
                 payload: {
-                    todo: data
+                    task: data
                 }
             });
         },
-        changeTodo: (idx: number) => {
+        completeTask: (idx: number) => {
             dispatch({
-                type: "COMPLETE_TODO",
+                type: "COMPLETE_TASK",
                 payload: {
                     index: idx
                 }
             })
         },
-        deleteTodo: (idx: number) => {
+        deleteTask: (idx: number) => {
             dispatch({
-                type: "DELETE_TODO",
+                type: "DELETE_TASK",
                 payload: {
                     index: idx
                 }

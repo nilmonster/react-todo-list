@@ -2,7 +2,7 @@ import { createContext, useReducer } from "react";
 import { TodoInitialState, TodoReducer, TodoStateType } from "./reducers/todo";
 
 type InitialStateType = {
-    todos: TodoStateType;
+    todo: TodoStateType;
 }
 
 export type ActionType = {
@@ -18,7 +18,7 @@ type ContextType = {
 }
 
 const InitialState = {
-    todos: TodoInitialState,
+    todo: TodoInitialState,
 }
 
 export const Context = createContext<ContextType>({
@@ -31,7 +31,7 @@ type ContextProviderType = {
 }
 
 const store = (state: InitialStateType, action: ActionType) => ({
-    todos: TodoReducer(state.todos, action),
+    todo: TodoReducer(state.todo, action),
 })
 
 export const ContextProvider = ({ children }: ContextProviderType) => {

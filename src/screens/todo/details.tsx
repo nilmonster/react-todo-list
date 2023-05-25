@@ -7,6 +7,7 @@ import {
     ScrollView,
     Text,
     VStack,
+    useColorModeValue,
     useToast
 } from "native-base";
 import { TodoType } from "../../@types/todo";
@@ -21,8 +22,9 @@ export default function TodoDetails() {
     const [inputValue, setInputValue] = useState("");
 
     const toast = useToast();
-    const { setTodos, addTodo, deleteTodo, changeTodo } = TodoActions();
-    const { state: { todos: { todos } } } = useContext(Context);
+    const { setTasks, addTask, deleteTask, completeTask } = TodoActions();
+    const { state: { todo: { tasks } } } = useContext(Context);
+    const color = useColorModeValue("#333", "#ccc");
 
     const clearInput = () => setInputValue("");
 
@@ -48,7 +50,7 @@ export default function TodoDetails() {
                 created_at: new Date()
             }
             realm.write<TodoType>(() => realm.create("Todo", data));
-            addTodo(data);
+            addTask(data);
         } catch (err) {
             console.log(err);
         } finally {
@@ -60,9 +62,9 @@ export default function TodoDetails() {
         const realm = await getRealm();
 
         try {
-            const obj = realm.objectForPrimaryKey("Todo", todos[index]._id);
+            const obj = realm.objectForPrimaryKey("Todo", tasks[index]._id);
             realm.write(() => realm.delete(obj));
-            deleteTodo(index);
+            deleteTask(index);
         } catch (err) {
             console.log(err);
         } finally {
@@ -74,13 +76,13 @@ export default function TodoDetails() {
         const realm = await getRealm();
 
         try {
-            const obj = realm.objectForPrimaryKey<TodoType>("Todo", todos[index]._id);
+            const obj = realm.objectForPrimaryKey<TodoType>("Todo", tasks[index]._id);
             realm.write(() => {
                 if (obj) {
-                    obj.is_completed = !todos[index].is_completed;
+                    obj.is_completed = !tasks[index].is_completed;
                 }
             })
-            changeTodo(index);
+            completeTask(index);
         } catch (err) {
             console.log(err);
         } finally {
@@ -88,12 +90,12 @@ export default function TodoDetails() {
         }
     };
 
-    const getTodos = async () => {
+    const getTasks = async () => {
         const realm = await getRealm();
 
         try {
             const todos = realm.objects<TodoType[]>("Todo").toJSON();
-            setTodos(todos as TodoType[]);
+            setTasks(todos as TodoType[]);
         } catch (err) {
             console.log(err);
         } finally {
@@ -102,7 +104,7 @@ export default function TodoDetails() {
     }
 
     useEffect(() => {
-        getTodos();
+        getTasks();
     }, [])
 
     return (
@@ -117,6 +119,9 @@ export default function TodoDetails() {
                         addItem(inputValue);
                         clearInput();
                     }}
+                    color={"coolGray.900"}
+                    borderColor={"coolGray.700"}
+                    placeholderTextColor={"#333"}
                     _dark={{
                         borderColor: "white",
                         color: "white",
@@ -126,6 +131,7 @@ export default function TodoDetails() {
                 <IconButton
                     borderRadius="sm"
                     variant="solid"
+                    backgroundColor="coolGray.800"
                     icon={<Icon name="plus" size={20} color="#ccc" />}
                     onPress={() => {
                         addItem(inputValue);
@@ -135,7 +141,7 @@ export default function TodoDetails() {
             </HStack>
             <ScrollView w={"300"} h={"300"}>
                 <VStack space={2}>
-                    {todos?.map((item, index) => (
+                    {tasks?.map((item, index) => (
                         <HStack
                             w="100%"
                             justifyContent="space-between"
@@ -144,6 +150,10 @@ export default function TodoDetails() {
                         >
                             <Checkbox
                                 aria-label="check"
+                                backgroundColor={"coolGray.800"}
+                                _checked={{
+                                    borderColor: "coolGray.500"
+                                }}
                                 isChecked={item.is_completed}
                                 onChange={() => handleStatusChange(index)}
                                 value={item.title}
@@ -158,14 +168,18 @@ export default function TodoDetails() {
                                 mx="2"
                                 strikeThrough={item.is_completed}
                                 onPress={() => handleStatusChange(index)}
-                                color={"white"}
+                                color={"#333"}
+                                _dark={{
+                                    color: "white"
+                                }}
                             >
                                 {item.title}
                             </Text>
                             <IconButton
                                 size="sm"
                                 colorScheme="trueGray"
-                                icon={<Icon name="trash" size={20} color="#ccc" />}
+                                color="#000"
+                                icon={<Icon name="trash" size={20} color={color} />}
                                 onPress={() => handleDelete(index)}
                             />
                         </HStack>

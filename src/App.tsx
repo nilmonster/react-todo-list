@@ -7,7 +7,7 @@ import { ContextProvider } from "./contexts";
 
 export default function App() {
   const isDarkMode = useColorScheme() === "dark";
-
+  
   return (
     <ContextProvider>
       <NativeBaseProvider theme={customTheme}>
@@ -17,7 +17,7 @@ export default function App() {
         />
         <Center
           flex={1}
-          bg={isDarkMode ? "coolGray.800" : "coolGray.50"}
+          bg={isDarkMode ? "coolGray.800" : "coolGray.200"}
         >
           <Todo />
         </Center>
