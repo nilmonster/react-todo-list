@@ -15,7 +15,7 @@ Start the packager by running the following commands.
 > yarn android
 ```
 
-<div align="center">
-  <img align="left" src="./assets/images/screen_moon.png" alt="mobile screenshot moon" width="40%">
-  <img align="right" src="./assets/images/screen_sun.png" alt="mobile screenshot sun" width="40%">
-</div>
+<p float="left">
+  <img src="./assets/images/screen_moon.png" alt="mobile screenshot moon" width="50%">
+  <img src="./assets/images/screen_sun.png" alt="mobile screenshot sun" width="50%">
+</p>
