@@ -3,13 +3,13 @@ import { Center, NativeBaseProvider, StatusBar } from "native-base";
 import Todo from "./screens/todo";
 import { useColorScheme } from "react-native";
 import { customTheme } from "./theme";
-import { ContextProvider } from "./contexts";
+import { StoreContextProvider } from "./contexts";
 
 export default function App() {
   const isDarkMode = useColorScheme() === "dark";
   
   return (
-    <ContextProvider>
+    <StoreContextProvider>
       <NativeBaseProvider theme={customTheme}>
         <StatusBar
           barStyle={isDarkMode ? "light-content" : "dark-content"}
@@ -22,6 +22,6 @@ export default function App() {
           <Todo />
         </Center>
       </NativeBaseProvider>
-    </ContextProvider>
+    </StoreContextProvider>
   );
 }
